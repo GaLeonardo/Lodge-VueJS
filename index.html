@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pousadaria</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="app">
+        <h2>Lista de pousadas</h2>
+        <div class="input">
+          <input type="text" v-model="searchText" placeholder="Pesquisar nome" v-if="visibleLodgeList">
+        </div>
+        <button v-on:click="getLodges()">Buscar pousadas</button>
+
+        <section class="list-lodges" v-if="visibleLodgeList && listResult.length > 0">
+            <ul>
+                <li v-for="lodge in listResult">
+                    <a href="#" v-on:click="getLodgeDetails(lodge.id); getRooms(lodge.id)">
+                        <h3>{{ lodge.brand_name }}</h3>
+                    </a>
+                    <p><strong>Full Address:</strong> {{ lodge.full_address }}</p>
+                    <p><strong>City:</strong> {{ lodge.city }}</p>
+                    <p><strong>Description:</strong> {{ lodge.description }}</p>
+                </li>
+            </ul>
+        </section>
+
+        <section class="detail-lodge" v-if="visibleLodgeDetails">
+            <ul>
+                <li>
+                    <h3>{{ brand_name }}</h3>
+                    <p><strong>Check-in:</strong> {{ check_in }}</p>
+                    <p><strong>Check-out:</strong> {{ check_out }}</p>
+                    <p><strong>City:</strong> {{ city }}</p>
+                    <p><strong>Contact Number:</strong> {{ contact_number }}</p>
+                    <p><strong>Description:</strong> {{ description }}</p>
+                    <p><strong>Email:</strong> {{ email }}</p>
+                    <p><strong>Full Address:</strong> {{ full_address }}</p>
+                    <p><strong>Pets:</strong> {{ pets }}</p>
+                    <p><strong>State:</strong> {{ state }}</p>
+                    <p><strong>Terms of Service:</strong> {{ terms_of_service }}</p>
+                    <p><strong>Zip Code:</strong> {{ zip_code }}</p>
+                </li>
+            </ul>
+        </section>
+
+        <section class="list-rooms" v-if="visibleRooms">
+            <ul>
+                <li v-for="room in roomList">
+                    <p><strong>{{ room.name }}</strong> </p>
+                    <p><strong>Descrição:</strong> {{ room.description }}</p>
+                    <p><strong>Área:</strong> {{ room.area }}</p>
+                    <p><strong>Capacidade de pessoas:</strong> {{ room.max_capacity }}</p>
+                    <p><strong>Valor da diária:</strong> {{ room.standard_price }}</p>
+                    <p class="services" v-if="room.hasBathroom || room.hasBalcony || room.hasAirConditioner || room.hasTV || room.hasCloset || room.hasVault || room.isAccessible">
+                        <strong>Serviços:</strong>
+                        <ul>
+                            <li v-if="room.hasBathroom">Banheiro</li>
+                            <li v-if="room.hasBalcony">Varanda</li>
+                            <li v-if="room.hasAirConditioner">Ar-condicionado</li>
+                            <li v-if="room.hasTV">TV</li>
+                            <li v-if="room.hasCloset">Guarda-roupa</li>
+                            <li v-if="room.hasVault">Cofre</li>
+                            <li v-if="room.isAccessible">Acessibilidade</li>
+                        </ul>
+                    </p>
+                    <button v-on:click="startReservationForm(room.id)">Verificar disponibilidade</button>
+                </li>
+            </ul>
+        </section>
+
+        <section class="reservation-form" v-if="visibleReservationForm">
+            <br><label for="check_in_date">Data de check-in:</label>
+            <input type="date" v-model="check_in_date" id="checkindate" name="checkindate">
+            <br><label for="check_out_date">Data de check-out:</label>
+            <input type="date" v-model="check_out_date" id="checkoutdate" name="checkoutdate">
+            <br><label for="numberguests">Número de hóspedes:</label>
+            <input type="number" v-model="numberguests" id="numberguests" name="numberguests">
+            <br><button v-on:click="checkRoomAvailable(roomId)">Realizar verificação</button>
+        </section>
+
+        <section class="reservation-details" v-if="visibleReservationDetails">
+            <div v-if="reservationprice !== ''">
+                <p>Reserva disponível</p>
+                <p>Valor da reserva: {{ reservationprice }}</p>
+            </div>
+            <div v-else>
+                <p>Reserva Indisponível</p>
+                <ul class="error-list">
+                    <li v-for="error in errors">{{ error }}</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
